@@ -1,12 +1,12 @@
+logging:
+  level:
+    org.springframework.security: DEBUG
+security:
+  # This is important because we want authentication and therefore sessions to be managed in the Gateway.
+  sessions: ALWAYS
 zuul:
   routes:
     ui:
       url: http://localhost:8081
     resource:
       url: http://localhost:9000
-security:
-  user:
-    password:
-      password
-  # This is important because we want authentication and therefore sessions to be managed in the Gateway.
-  sessions: ALWAYS
