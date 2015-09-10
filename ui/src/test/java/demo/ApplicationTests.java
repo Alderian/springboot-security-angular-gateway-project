@@ -24,7 +24,8 @@ public class ApplicationTests {
 
 	@Test
 	public void homePageProtected() {
-		ResponseEntity<String> response = new TestRestTemplate().getForEntity("http://localhost:" + port + "/", String.class);
+		ResponseEntity<String> response = new TestRestTemplate().getForEntity("http://localhost:" + port + "/",
+				String.class);
 		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 	}
 
