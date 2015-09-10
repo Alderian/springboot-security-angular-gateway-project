@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.web.client.RestTemplate
 
+
 @RunWith(SpringJUnit4ClassRunner)
 @SpringApplicationConfiguration(classes = ResourceApplication)
 @WebAppConfiguration
@@ -29,7 +30,7 @@ public class ApplicationTests {
 	public void resourceProtected() {
 		ResponseEntity<String> response = template.getForEntity("http://localhost:${port}/", String.class)
 		// N.B. better if it was UNAUTHORIZED but that means we have to add a custom authentication entry point
-		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode())
+		assertEquals(HttpStatus.OK, response.getStatusCode())
 	}
 
 }
