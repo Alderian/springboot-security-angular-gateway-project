@@ -15,7 +15,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = UiApplication.class)
+@SpringApplicationConfiguration(classes = AdminApplication.class)
 @WebAppConfiguration
 @IntegrationTest({"server.port:0", "security.user.password:foo"})
 public class ApplicationTests {

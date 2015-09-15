@@ -9,9 +9,10 @@
 	<name>Spring Pairs Sample Doble</name> 
 
 	<modules>
+		<module>gateway</module>
 		<module>ui</module>
 		<module>resource</module>
-		<module>gateway</module>
+		<module>admin</module>
 	</modules>
 	
 </project>
