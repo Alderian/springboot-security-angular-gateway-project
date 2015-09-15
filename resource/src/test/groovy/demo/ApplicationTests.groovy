@@ -1,6 +1,6 @@
 package demo
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,7 +30,7 @@ public class ApplicationTests {
 	public void resourceProtected() {
 		ResponseEntity<String> response = template.getForEntity("http://localhost:${port}/", String.class)
 		// N.B. better if it was UNAUTHORIZED but that means we have to add a custom authentication entry point
-		assertEquals(HttpStatus.OK, response.getStatusCode())
+		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode())
 	}
 
 }

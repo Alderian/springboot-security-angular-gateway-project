@@ -70,7 +70,7 @@ public class GatewayApplication {
 				.withUser("admin").password("admin").roles("USER", "ADMIN", "READER", "WRITER")
 			.and()
 				.withUser("audit").password("audit").roles("USER", "ADMIN", "READER");
-            // @formatter:on
+			// @formatter:on
 		}
 
 		@Override
@@ -83,7 +83,8 @@ public class GatewayApplication {
 			.and()
 				.authorizeRequests()
 					.antMatchers("/index.html", "/login", "/").permitAll()
-					.anyRequest().authenticated()
+			        .antMatchers("/admin/**").hasRole("ADMIN")
+			        .anyRequest().authenticated()
 			.and()
 				.csrf().csrfTokenRepository(csrfTokenRepository())
 			.and()

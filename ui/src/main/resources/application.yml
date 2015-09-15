@@ -1,6 +1,9 @@
-security:
-  user:
-    password: password
-  sessions: NEVER
+logging:
+  level:
+    org.springframework.security: DEBUG
+#security:
+#  user:
+#    password: password
+#  sessions: NEVER
 server:
   port: 8081
