@@ -7,51 +7,161 @@
 [ng\:cloak], [ng-cloak], .ng-cloak {
 	display: none !important;
 }
+
+/** TODO: Mover al main.less */
+body {
+	background-color: #d8d8d8;
+}
+
+a {
+	color: #3f729b;
+}
+
+a:hover {
+	color: #1c5380;
+}
+
+.text-muted {
+	color: #90939a;
+}
+
+.navbar {
+	min-height: 50px;
+	border: 0;
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26);
+}
+
+.navbar-header {
+	float: left;
+	padding-left: 15px;
+}
+
+.navbar-brand {
+	height: 50px;
+	padding: 0 15px;
+	font-size: inherit;
+	line-height: 50px;
+}
+
+.navbar-nav {
+	float: left;
+	margin: 0;
+	width: 100%;
+}
+
+.navbar-nav>li {
+	float: left;
+}
+
+.navbar-nav>li>a, .navbar-nav>div>span {
+	padding: 0 15px;
+	line-height: 50px;
+}
+
+.navbar-text {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.center-form {
+	width: 315px;
+	margin: 10% auto;
+}
 </style>
 </head>
 
-<body ng-app="gateway" ng-controller="navigation" ng-cloak
-	class="ng-cloak">
-	<nav class="navbar navbar-default">
+<body ng-app="gateway" ng-controller="navigation" ng-cloak class="ng-cloak">
+
+	<nav class="navbar navbar-default navbar-static-top">
 		<div class="container">
-			<a class="brand" href='#/'>Home</a>
-			<div class="navbar-right">
-				<a class="btn btn-primary" ng-show="!authenticated" href="#/login">login</a> <a
-					class="btn btn-primary" ng-show="authenticated" href=""
-					ng-click="logout()">logout</a>
-				<p ng-show="authenticated">
-					Signed in as <a href="#/" class="navbar-link">{{user}}</a>
-				</p>
-			</div>
-		</div>
+			<ul class="nav navbar-nav">
+				<a class="navbar-brand" href='/'><i class="ion-images"></i>Gateway</a>
+				<li><a href="/">Home</a></li>
+				<li><a ng-show="!authenticated" href="#/login">login</a></li>
+				<li><a ng-show="!authenticated" href="#/signup">Sign up</a></li>
+				<li><a ng-show="authenticated" href="" ng-click="logout()">logout</a></li>
+				<div class="navbar-right">
+					<span ng-show="authenticated"> Signed in as <a href="#/"
+						class="navbar-link">{{user}}</a> </apan>
+				</div>
+			</ul>
 		</div>
 	</nav>
 
-	<div class="alert alert-danger" ng-show="error">There was a
-		problem logging in. Please try again.</div>
+	<div class="container">
 
-	<div class="container" ng-show="!authenticated">
-		<form role="form" ng-submit="login()">
-			<div class="form-group">
-				<label for="username">Username:</label> <input type="text"
-					class="form-control" id="username" name="username"
-					ng-model="credentials.username" />
+		<div ng-if="authenticated">
+			<div class="jumbotron">
+				<h2>
+					<i class="ion-images"></i> Gateway
+				</h2>
+				<p>
+					This is a basic gateway, powered with <strong>Spring Boot
+						Security</strong>. To continue, please log in
+				</p>
 			</div>
-			<div class="form-group">
-				<label for="password">Password:</label> <input type="password"
-					class="form-control" id="password" name="password"
-					ng-model="credentials.password" />
-			</div>
-			<button type="submit" class="btn btn-primary">Submit</button>
-		</form>
-	</div>
+		</div>
 
-	<div class="container" ng-show="authenticated">
-		<a class="btn btn-primary" href="/ui/">Go To User Interface</a>
-		<a class="btn btn-primary" href="/admin/">Go To Admin Interface</a>
+		<div class="container" ng-show="!authenticated">
+
+			<div class="center-form panel">
+				<div class="panel-body">
+					<h4 class="text-center">
+						<i class="ion-log-in"></i> Log in
+					</h4>
+
+					<form role="form" ng-submit="login()">
+						<div class="form-group">
+							<label for="username">Username:</label> <input type="text"
+								class="form-control" id="username" name="username"
+								ng-model="credentials.username" required autofocus />
+						</div>
+						<div class="form-group">
+							<label for="password">Password:</label> <input type="password"
+								class="form-control" id="password" name="password"
+								ng-model="credentials.password" />
+						</div>
+
+						<div class="alert alert-danger" ng-show="error">There was a
+							problem logging in. Please try again.</div>
+
+						<button type="submit" class="btn btn-block btn-success"
+							ng-disabled="form.$invalid">Log in</button>
+
+						<br />
+
+						<p class="text-center text-muted">
+							<small>Don't have an account yet? <a href="#/signup">Sign
+									up</a></small>
+						</p>
+
+					</form>
+				</div>
+			</div>
+
+			<div ng-if="!authenticated">
+				<div class="alert alert-info">
+					<h2>Usuarios:</h2>
+					<ul>
+						<li>user / password</li>
+						<li>admin / admin</li>
+						<li>audit / audit</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="container" ng-show="authenticated">
+			<a class="btn btn-primary" href="/ui/">Go To User Interface</a> <a
+				class="btn btn-primary" href="/admin/"
+				ng-show="isAuthorized('ROLE_ADMIN')">Go To Admin Interface</a>
+		</div>
+
 	</div>
 
 	<script src="js/gateway-assets.js" type="text/javascript"></script>
 	<script src="js/gateway.js" type="text/javascript"></script>
+
 </body>
 </html>
