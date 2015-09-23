@@ -22,25 +22,24 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableRedisHttpSession
 public class UiApplication {
 
-	@RequestMapping("/user")
-	public Map<String, Object> user(Principal user) {
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		map.put("name", user.getName());
-		map.put("roles", AuthorityUtils.authorityListToSet(((Authentication) user)
-				.getAuthorities()));
-		return map;
-	}
+    @RequestMapping("/user")
+    public Map<String, Object> user(Principal user) {
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        map.put("name", user.getName());
+        map.put("roles", AuthorityUtils.authorityListToSet(((Authentication) user).getAuthorities()));
+        return map;
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(UiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(UiApplication.class, args);
+    }
 
-	@Configuration
-	@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-	protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			// @formatter:off
+    @Configuration
+    @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+    protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            // @formatter:off
 			http
 				.httpBasic()
 			.and()
@@ -48,7 +47,7 @@ public class UiApplication {
 					.antMatchers("/index.html", "/").permitAll()
 					.anyRequest().hasRole("USER");
 			// @formatter:on
-		}
-	}
+        }
+    }
 
 }
