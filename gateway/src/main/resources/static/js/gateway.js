@@ -20,7 +20,7 @@ function($scope, $http) {
 		}).success(function(data) {
 			if (data.name) {
 				$scope.authenticated = true;
-				$scope.user = data.name
+				$scope.user = data;
 			} else {
 				$scope.authenticated = false;
 			}
@@ -49,6 +49,10 @@ function($scope, $http) {
 			console.log("Logout failed")
 			$scope.authenticated = false;
 		});
+	}
+
+	$scope.isAuthorized = function(role) {
+		return $scope.user && $scope.user.roles && $scope.user.roles.indexOf(role) > 0;
 	}
 
 });
