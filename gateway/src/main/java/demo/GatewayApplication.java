@@ -2,7 +2,7 @@ package demo;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -23,6 +23,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -42,28 +44,31 @@ import org.springframework.web.util.WebUtils;
 @EnableZuulProxy
 public class GatewayApplication {
 
-	@RequestMapping("/user")
-	@ResponseBody
-	public Map<String, Object> user(Principal user) {
-		return Collections.<String, Object> singletonMap("name", user.getName());
-	}
+    @RequestMapping("/user")
+    @ResponseBody
+    public Map<String, Object> user(Principal user) {
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        map.put("name", user.getName());
+        map.put("roles", AuthorityUtils.authorityListToSet(((Authentication) user).getAuthorities()));
+        return map;
+    }
 
-	@RequestMapping("/login")
-	public String login() {
-		return "forward:/";
-	}
+    @RequestMapping("/login")
+    public String login() {
+        return "forward:/";
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(GatewayApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GatewayApplication.class, args);
+    }
 
-	@Configuration
-	@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-	protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    @Configuration
+    @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+    protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-		@Autowired
-		public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
-			// @formatter:off	
+        @Autowired
+        public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
+            // @formatter:off
 			auth.inMemoryAuthentication()
 				.withUser("user").password("password").roles("USER")
 			.and()
@@ -71,11 +76,11 @@ public class GatewayApplication {
 			.and()
 				.withUser("audit").password("audit").roles("USER", "ADMIN", "READER");
 			// @formatter:on
-		}
+        }
 
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			// @formatter:off
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            // @formatter:off
 			http
 				.httpBasic()
 			.and()
@@ -90,33 +95,33 @@ public class GatewayApplication {
 			.and()
 				.addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
 			// @formatter:on
-		}
+        }
 
-		private Filter csrfHeaderFilter() {
-			return new OncePerRequestFilter() {
-				@Override
-				protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-						FilterChain filterChain) throws ServletException, IOException {
-					CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-					if (csrf != null) {
-						Cookie cookie = WebUtils.getCookie(request, "XSRF-TOKEN");
-						String token = csrf.getToken();
-						if (cookie == null || token != null && !token.equals(cookie.getValue())) {
-							cookie = new Cookie("XSRF-TOKEN", token);
-							cookie.setPath("/");
-							response.addCookie(cookie);
-						}
-					}
-					filterChain.doFilter(request, response);
-				}
-			};
-		}
+        private Filter csrfHeaderFilter() {
+            return new OncePerRequestFilter() {
+                @Override
+                protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                        FilterChain filterChain) throws ServletException, IOException {
+                    CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+                    if (csrf != null) {
+                        Cookie cookie = WebUtils.getCookie(request, "XSRF-TOKEN");
+                        String token = csrf.getToken();
+                        if (cookie == null || token != null && !token.equals(cookie.getValue())) {
+                            cookie = new Cookie("XSRF-TOKEN", token);
+                            cookie.setPath("/");
+                            response.addCookie(cookie);
+                        }
+                    }
+                    filterChain.doFilter(request, response);
+                }
+            };
+        }
 
-		private CsrfTokenRepository csrfTokenRepository() {
-			HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-			repository.setHeaderName("X-XSRF-TOKEN");
-			return repository;
-		}
-	}
+        private CsrfTokenRepository csrfTokenRepository() {
+            HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+            repository.setHeaderName("X-XSRF-TOKEN");
+            return repository;
+        }
+    }
 
 }

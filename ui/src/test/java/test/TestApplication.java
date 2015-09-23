@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class TestApplication {
 
-	@RequestMapping("/")
-	public String home() {
-		return "forward:/test.html";
-	}
+    @RequestMapping("/")
+    public String home() {
+        return "forward:/test.html";
+    }
 
-	public static void main(String[] args) {
-		new SpringApplicationBuilder(TestApplication.class).properties(
-				"server.port=9999", "security.basic.enabled=false").run(args);
-	}
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(TestApplication.class)
+                .properties("server.port=9999", "security.basic.enabled=false").run(args);
+    }
 
 }
