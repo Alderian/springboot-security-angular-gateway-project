@@ -8,7 +8,6 @@ function($scope, $http) {
 		if (data.name) {
 			$scope.authenticated = true;
 			$scope.user = data.name;
-			$scope.roles = data.roles;
 			$http.get('/resource/').success(function(data) {
 				$scope.greeting = data;
 			})
@@ -18,11 +17,6 @@ function($scope, $http) {
 	}).error(function() {
 		$scope.authenticated = false;
 	});
-
-	$scope.isAuthorized = function(role) {
-		return $scope.roles.indexOf(role) > 0;
-	};
-
 
 	console.log('Done')
 
